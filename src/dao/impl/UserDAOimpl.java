@@ -43,6 +43,26 @@ public class UserDAOimpl implements UserDAO{
 		}
 		return u;
 	}
+	public Integer isExistUser(String username){//0: not exist 1: exist
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Integer rtn = -1;
+		try {
+			conn = jh.getConnection();
+			ps = conn.prepareStatement("SELECT id FROM oqp.user WHERE username=? and status=0");
+			ps.setString(1, username);
+			rs = ps.executeQuery();
+			if (rs.first() != false){
+				rtn = 1;
+			} else {
+				rtn = 0;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return rtn;
+	}
 	public Integer getUidByUsernamePasswordType(String username, String password, Integer type){
 		Connection conn = null;
 		PreparedStatement ps = null;

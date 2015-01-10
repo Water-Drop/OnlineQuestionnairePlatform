@@ -79,13 +79,15 @@ public class Account{
 		if (username == null || password == null || email == null || type == null){
 			status = 1;
 		} else {
-			userid = ud.addUser(username, password, email, type);
-			if (userid > 0){
-				SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
-				String createTime = fmt.format(new Date()).toString();
-				authToken = MD5Helper.generateMD5(createTime + requestIp + userAgent);
-				if (ud.addAuthToken(userid, createTime, authToken) > 0){
-					status = 0;
+			if (ud.isExistUser(username) == 0){//not exist user before
+				userid = ud.addUser(username, password, email, type);
+				if (userid > 0){
+					SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
+					String createTime = fmt.format(new Date()).toString();
+					authToken = MD5Helper.generateMD5(createTime + requestIp + userAgent);
+					if (ud.addAuthToken(userid, createTime, authToken) > 0){
+						status = 0;
+					}
 				}
 			}
 		}
