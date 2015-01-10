@@ -10,4 +10,5 @@ public interface QuestionnaireDAO {
 	public Integer releaseQuestionnaire(Integer qnid);
 	public Integer deleteQuestionnaire(Integer qnid);
 	public List<Questionnaire> getQuestionnairesByUid(Integer uid);
+	public Questionnaire getQuestionnaireById(Integer qnid);
 }

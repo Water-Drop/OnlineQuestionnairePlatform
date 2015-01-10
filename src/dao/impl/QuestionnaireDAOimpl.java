@@ -60,7 +60,7 @@ public class QuestionnaireDAOimpl implements QuestionnaireDAO{
 		Integer rtn = -1;
 		try {
 			conn = jh.getConnection();
-			ps = conn.prepareStatement("UPDATE oqp.questionnaire SET title=? AND description=? AND type=? WHERE id=?");
+			ps = conn.prepareStatement("UPDATE oqp.questionnaire SET title=?, description=?, type=? WHERE id=?");
 			ps.setString(1,qn.getTitle());
 			ps.setString(2,qn.getDescription());
 			ps.setInt(3,qn.getType());
@@ -84,7 +84,7 @@ public class QuestionnaireDAOimpl implements QuestionnaireDAO{
 		Integer rtn = -1;
 		try {
 			conn = jh.getConnection();
-			ps = conn.prepareStatement("UPDATE oqp.questionnaire SET releasetime=? AND status=1 WHERE id=?");
+			ps = conn.prepareStatement("UPDATE oqp.questionnaire SET releasetime=?, status=1 WHERE id=?");
 			SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
 			ps.setString(1, fmt.format(new Date()));
 			ps.setInt(2, qnid);
@@ -154,5 +154,38 @@ public class QuestionnaireDAOimpl implements QuestionnaireDAO{
 			jh.close(conn);
 		}
 		return qns;
+	}
+	public Questionnaire getQuestionnaireById(Integer qnid){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Questionnaire qn = new Questionnaire();
+		try {
+			conn = jh.getConnection();
+			ps = conn.prepareStatement("SELECT id,uid,title,description,createtime,releasetime,path,type,status FROM oqp.questionnaire WHERE id=? AND status!=2");
+			ps.setInt(1, qnid);
+			rs = ps.executeQuery();
+			if (rs.first() != false){
+				qn.setId(qnid);
+				qn.setUid(rs.getInt("uid"));
+				qn.setTitle(rs.getString("title"));
+				qn.setDescription(rs.getString("description"));
+				SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
+				qn.setCreateTime(fmt.parse(rs.getString("createtime")));
+				qn.setType(rs.getInt("type"));
+				qn.setStatus(rs.getInt("status"));
+				if (qn.getStatus() == 1){
+					qn.setReleaseTime(fmt.parse(rs.getString("releasetime")));
+					qn.setPath(rs.getString("path"));
+				}	
+			} else {
+				qn.setStatus(2);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			jh.close(conn);
+		}
+		return qn;
 	}
 }

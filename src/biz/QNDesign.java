@@ -110,6 +110,44 @@ public class QNDesign {
 		JSONObject json = JSONObject.fromObject(map);
 		return json.toString();
 	}
+	@Path("/getqnbyid")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getQuestionnaireById(String param){
+		Integer status = -1;
+		Map<String, String> map = new HashMap<String, String>();
+		Questionnaire qn = new Questionnaire();
+		JSONObject paramjson = JSONObject.fromObject(param);
+		String authToken = paramjson.getString("authToken");
+		Integer uid = paramjson.getInt("uid");
+		String requestIp = req.getRemoteAddr();
+		String userAgent = req.getHeader("user-agent");
+		if (au.authUser(uid, requestIp, userAgent, authToken) == 0){
+			qn = qnd.getQuestionnaireById(paramjson.getInt("qnid"));
+			if (qn.getStatus() != 2){//2 means no qn for the id
+				status = 0;
+				map.put("qnid", qn.getId().toString());
+				map.put("uid", qn.getUid().toString());
+				map.put("title", qn.getTitle());
+				map.put("description", qn.getDescription());
+				SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
+				map.put("createTime", fmt.format(qn.getCreateTime()));
+				map.put("type", qn.getType().toString());
+				map.put("qnstatus", qn.getStatus().toString());
+				if (qn.getStatus() == 1){
+					map.put("path", qn.getPath());
+					map.put("releaseTime", fmt.format(qn.getReleaseTime()));
+					}
+				} else {
+				status = 1;// no such questionnaire!
+				}
+		} else {
+			status = -2;//request denied!
+		}
+		map.put("status", status.toString());
+		JSONObject json = JSONObject.fromObject(map);
+		return json.toString();
+	}
 	@Path("/modifyqn")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
