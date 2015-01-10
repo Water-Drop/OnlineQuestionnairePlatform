@@ -23,7 +23,7 @@ public class QuestionDAOimpl implements QuestionDAO{
 		try {
 			conn = jh.getConnection();
 			conn.setAutoCommit(false);
-			ips = conn.prepareStatement("INSERT INTO oqp.question (qnid,title,description,createtime,order,type,status) VALUES (?,?,?,?,?,?,0)");
+			ips = conn.prepareStatement("INSERT INTO oqp.question (qnid,title,description,createtime,`order`,type,status) VALUES (?,?,?,?,?,?,0)");
 			ips.setInt(1,q.getQnid());
 			ips.setString(2,q.getTitle());
 			ips.setString(3,q.getDescription());
@@ -60,7 +60,7 @@ public class QuestionDAOimpl implements QuestionDAO{
 		Integer rtn = -1;
 		try {
 			conn = jh.getConnection();
-			ps = conn.prepareStatement("UPDATE oqp.question SET title=? AND description=? AND order=? WHERE id=?");
+			ps = conn.prepareStatement("UPDATE oqp.question SET title=?, description=?, `order`=? WHERE id=?");
 			ps.setString(1,q.getTitle());
 			ps.setString(2,q.getDescription());
 			ps.setDouble(3, q.getOrder());
@@ -106,7 +106,7 @@ public class QuestionDAOimpl implements QuestionDAO{
 		List<Question> qs = new ArrayList<Question>();
 		try {
 			conn = jh.getConnection();
-			ps = conn.prepareStatement("SELECT id,title,description,createtime,order,type,status FROM oqp.question WHERE qnid=? AND status!=2 ORDER BY order");
+			ps = conn.prepareStatement("SELECT id,title,description,createtime,`order`,type,status FROM oqp.question WHERE qnid=? AND status!=2 ORDER BY `order`");
 			ps.setInt(1, qnid);
 			rs = ps.executeQuery();
 			while (rs.next()){

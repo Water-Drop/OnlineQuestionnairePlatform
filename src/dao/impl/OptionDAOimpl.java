@@ -22,7 +22,7 @@ public class OptionDAOimpl implements OptionDAO{
 		try {
 			conn = jh.getConnection();
 			conn.setAutoCommit(false);
-			ips = conn.prepareStatement("INSERT INTO oqp.option (qid,content,order,status) VALUES (?,?,?,0)");
+			ips = conn.prepareStatement("INSERT INTO oqp.option (qid,content,`order`,status) VALUES (?,?,?,0)");
 			ips.setInt(1,o.getQid());
 			ips.setString(2,o.getContent());
 			ips.setInt(3,o.getOrder());
@@ -55,7 +55,7 @@ public class OptionDAOimpl implements OptionDAO{
 		Integer rtn = -1;
 		try {
 			conn = jh.getConnection();
-			ps = conn.prepareStatement("UPDATE oqp.option SET content=? AND order=? WHERE id=?");
+			ps = conn.prepareStatement("UPDATE oqp.option SET content=?, `order`=? WHERE id=?");
 			ps.setString(1,o.getContent());
 			ps.setInt(2,o.getOrder());
 			ps.setInt(3,o.getId());
@@ -100,7 +100,7 @@ public class OptionDAOimpl implements OptionDAO{
 		List<Option> os = new ArrayList<Option>();
 		try {
 			conn = jh.getConnection();
-			ps = conn.prepareStatement("SELECT id,content,order,status FROM oqp.option WHERE qid=? AND status!=2 ORDER BY order");
+			ps = conn.prepareStatement("SELECT id,content,`order`,status FROM oqp.option WHERE qid=? AND status!=2 ORDER BY `order`");
 			ps.setInt(1, qid);
 			rs = ps.executeQuery();
 			while (rs.next()){
