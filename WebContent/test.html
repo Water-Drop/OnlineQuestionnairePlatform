@@ -14,7 +14,7 @@ function a() {
 	alert("aaaaaa!!!");
 	
 	 $.ajax({  
-         url: "http://localhost:8080/OnlineQuestionnairePlatform/services/account/login",  
+         url: "http://59.78.3.95:8080/OnlineQuestionnairePlatform/services/account/login",  
          type: "POST",  
          dataType: "json",  
          contentType: "application/json; charset=utf-8",  
@@ -38,11 +38,11 @@ function b() {
 	alert("bbbbbbbb!!!");
 	
 	 $.ajax({  
-         url: "http://localhost:8080/OnlineQuestionnairePlatform/services/account/register",  
+         url: "http://59.78.3.95:8080/OnlineQuestionnairePlatform/services/account/register",  
          type: "POST",  
          dataType: "json",  
          contentType: "application/json; charset=utf-8",  
-         data: "{username:'admin3',password:'123456', email:'123456@qq.com',type:1}",
+         data: "{username:'admin4',password:'123456', email:'123456@qq.com',type:1}",
          beforeSend: function(x) {  
              x.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
          },  

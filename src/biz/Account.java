@@ -70,7 +70,7 @@ public class Account{
 		String username = json_param.getString("username");
 		String password = json_param.getString("password");
 		String email = json_param.getString("email");
-		Integer type = json_param.getInt("type");
+		Integer type = json_param.getInt("type");//type 0: admin 1:enterprise 2:user
 		Integer userid = -1;
 		Integer status = -1; //0: Success 1:miss information
 		String authToken = "";

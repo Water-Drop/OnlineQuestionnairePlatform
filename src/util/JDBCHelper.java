@@ -4,8 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Properties;
 
@@ -27,7 +25,6 @@ public class JDBCHelper {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("url:" + url + "uername:" + username + "password" + password);
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
