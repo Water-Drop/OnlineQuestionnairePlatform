@@ -4,6 +4,7 @@ public class Option {
 	private Integer id;
 	private Integer qid;
 	private Integer content;
+	private Integer order;
 	private Integer status;
 	public Integer getId() {
 		return id;
@@ -22,6 +23,12 @@ public class Option {
 	}
 	public void setContent(Integer content) {
 		this.content = content;
+	}
+	public Integer getOrder() {
+		return order;
+	}
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 	public Integer getStatus() {
 		return status;

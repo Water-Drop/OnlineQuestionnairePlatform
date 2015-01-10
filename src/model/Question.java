@@ -8,7 +8,7 @@ public class Question {
 	private String title;
 	private String description;
 	private Date createTime;
-	private Date lastModifiedTime;
+	private Integer order;
 	private Integer type;
 	private Integer status;
 	public Integer getId() {
@@ -41,11 +41,11 @@ public class Question {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
-	public Date getLastModifiedTime() {
-		return lastModifiedTime;
+	public Integer getOrder() {
+		return order;
 	}
-	public void setLastModifiedTime(Date lastModifiedTime) {
-		this.lastModifiedTime = lastModifiedTime;
+	public void setOrder(Integer order) {
+		this.order = order;
 	}
 	public Integer getType() {
 		return type;

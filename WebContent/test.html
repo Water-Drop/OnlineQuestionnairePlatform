@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<button onclick="a()">Login</button>
+<button onclick="b()">Register</button>
+<script type="text/javascript" src="js/jquery-2.1.0.js"></script>
+<script type="text/javascript">
+
+function a() {
+	alert("aaaaaa!!!");
+	
+	 $.ajax({  
+         url: "http://localhost:8080/OnlineQuestionnairePlatform/services/account/login",  
+         type: "POST",  
+         dataType: "json",  
+         contentType: "application/json; charset=utf-8",  
+         data: "{loginname:'admin',password:'123456',type:1}",
+         beforeSend: function(x) {  
+             x.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
+         },  
+         success: function(json) {  
+             alert(json.status);  
+         },  
+         error: function(x, e) {  
+        	 alert(2);
+             alert(x.responseText);  
+         },  
+         complete: function(x) {  
+             alert(x.responseText);  
+         }  
+     });  
+	}
+function b() {
+	alert("bbbbbbbb!!!");
+	
+	 $.ajax({  
+         url: "http://localhost:8080/OnlineQuestionnairePlatform/services/account/register",  
+         type: "POST",  
+         dataType: "json",  
+         contentType: "application/json; charset=utf-8",  
+         data: "{username:'admin3',password:'123456', email:'123456@qq.com',type:1}",
+         beforeSend: function(x) {  
+             x.setRequestHeader("Content-Type", "application/json; charset=utf-8");  
+         },  
+         success: function(json) {  
+             alert(json.status);  
+         },  
+         error: function(x, e) {  
+        	 alert(2);
+             alert(x.responseText);  
+         },  
+         complete: function(x) {  
+             alert(x.responseText);  
+         }  
+     });  
+	}
+	</script>
+<p>Hello World!</p>
+
+</body>
+</html>

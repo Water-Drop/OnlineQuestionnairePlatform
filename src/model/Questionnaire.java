@@ -8,10 +8,7 @@ public class Questionnaire {
 	private String title;
 	private String description;
 	private Date createTime;
-	private Date lastModifiedTime;
 	private Date releaseTime;
-	private Date startTime;
-	private Date endTime;
 	private String path;
 	private Integer type;
 	private Integer status;
@@ -45,29 +42,11 @@ public class Questionnaire {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
-	public Date getLastModifiedTime() {
-		return lastModifiedTime;
-	}
-	public void setLastModifiedTime(Date lastModifiedTime) {
-		this.lastModifiedTime = lastModifiedTime;
-	}
 	public Date getReleaseTime() {
 		return releaseTime;
 	}
 	public void setReleaseTime(Date releaseTime) {
 		this.releaseTime = releaseTime;
-	}
-	public Date getStartTime() {
-		return startTime;
-	}
-	public void setStartTime(Date startTime) {
-		this.startTime = startTime;
-	}
-	public Date getEndTime() {
-		return endTime;
-	}
-	public void setEndTime(Date endTime) {
-		this.endTime = endTime;
 	}
 	public String getPath() {
 		return path;

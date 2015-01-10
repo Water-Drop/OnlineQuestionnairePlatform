@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Properties;
 
 public class JDBCHelper {
@@ -47,21 +47,7 @@ public class JDBCHelper {
 		return conn;
 	}
 
-	public void close(Connection conn, Statement st, ResultSet rs) {
-		if (rs != null) {
-			try {
-				rs.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		if (st != null) {
-			try {
-				st.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+	public void close(Connection conn) {
 		if (conn != null) {
 			try {
 				conn.close();
