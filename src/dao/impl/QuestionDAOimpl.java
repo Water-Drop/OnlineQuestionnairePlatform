@@ -5,10 +5,12 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
-import dao.QuestionDAO;
-import util.JDBCHelper;
 import model.Question;
+import util.JDBCHelper;
+import dao.QuestionDAO;
 
 public class QuestionDAOimpl implements QuestionDAO{
 	JDBCHelper jh = new JDBCHelper();
@@ -27,7 +29,7 @@ public class QuestionDAOimpl implements QuestionDAO{
 			ips.setString(3,q.getDescription());
 			SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
 			ips.setString(4, fmt.format(q.getCreateTime()));
-			ips.setInt(5,q.getOrder());
+			ips.setDouble(5,q.getOrder());
 			ips.setInt(6, q.getType());
 			sps = conn.prepareStatement("SELECT LAST_INSERT_ID()");
 			ips.execute();
@@ -58,10 +60,11 @@ public class QuestionDAOimpl implements QuestionDAO{
 		Integer rtn = -1;
 		try {
 			conn = jh.getConnection();
-			ps = conn.prepareStatement("UPDATE oqp.question SET title=? AND description=? WHERE id=?");
+			ps = conn.prepareStatement("UPDATE oqp.question SET title=? AND description=? AND order=? WHERE id=?");
 			ps.setString(1,q.getTitle());
 			ps.setString(2,q.getDescription());
-			ps.setInt(3, q.getId());
+			ps.setDouble(3, q.getOrder());
+			ps.setInt(4, q.getId());
 			Integer num = ps.executeUpdate();
 			if (num == 0){
 				rtn = 1;
@@ -96,7 +99,33 @@ public class QuestionDAOimpl implements QuestionDAO{
 		}
 		return rtn;
 	}
-	public Integer getNewQuestionOrderByQnid(Integer qnid){
-		return 0;
+	public List<Question> getQuestionsByQnid(Integer qnid){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<Question> qs = new ArrayList<Question>();
+		try {
+			conn = jh.getConnection();
+			ps = conn.prepareStatement("SELECT id,title,description,createtime,order,type,status FROM oqp.question WHERE qnid=? AND status!=2 ORDER BY order");
+			ps.setInt(1, qnid);
+			rs = ps.executeQuery();
+			while (rs.next()){
+				Question q = new Question();
+				q.setId(rs.getInt("id"));
+				q.setQnid(qnid);
+				q.setTitle(rs.getString("title"));
+				q.setDescription(rs.getString("description"));
+				SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
+				q.setCreateTime(fmt.parse(rs.getString("createtime")));
+				q.setOrder(rs.getDouble("order"));
+				q.setType(rs.getInt("type"));
+				q.setStatus(rs.getInt("status"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			jh.close(conn);
+		}
+		return qs;
 	}
 }

@@ -144,6 +144,7 @@ public class QuestionnaireDAOimpl implements QuestionnaireDAO{
 				qn.setStatus(rs.getInt("status"));
 				if (qn.getStatus() == 1){
 					qn.setReleaseTime(fmt.parse(rs.getString("releasetime")));
+					qn.setPath(rs.getString("path"));
 				}
 			}
 		} catch (Exception e) {

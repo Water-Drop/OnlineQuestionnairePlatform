@@ -8,7 +8,7 @@ public class Question {
 	private String title;
 	private String description;
 	private Date createTime;
-	private Integer order;
+	private Double order;
 	private Integer type;
 	private Integer status;
 	public Integer getId() {
@@ -41,10 +41,10 @@ public class Question {
 	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
-	public Integer getOrder() {
+	public Double getOrder() {
 		return order;
 	}
-	public void setOrder(Integer order) {
+	public void setOrder(Double order) {
 		this.order = order;
 	}
 	public Integer getType() {
