@@ -14,12 +14,15 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 
+import model.Option;
 import model.Question;
 import model.Questionnaire;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
+import dao.OptionDAO;
 import dao.QuestionDAO;
 import dao.QuestionnaireDAO;
+import dao.impl.OptionDAOimpl;
 import dao.impl.QuestionDAOimpl;
 import dao.impl.QuestionnaireDAOimpl;
 
@@ -28,6 +31,7 @@ public class QNDesign {
 	@Context HttpServletRequest req; 
 	QuestionDAO qd = new QuestionDAOimpl();
 	QuestionnaireDAO qnd = new QuestionnaireDAOimpl();
+	OptionDAO od = new OptionDAOimpl();
 	Auth au = new Auth();
 	@Path("/addqn")
 	@POST
@@ -84,7 +88,7 @@ public class QNDesign {
 					qn_map.put("title", qns.get(i).getTitle());
 					qn_map.put("description", qns.get(i).getDescription());
 					SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
-					qn_map.put("creatTime", fmt.format(qns.get(i).getCreateTime()));
+					qn_map.put("createTime", fmt.format(qns.get(i).getCreateTime()));
 					qn_map.put("type", qns.get(i).getType().toString());
 					qn_map.put("status", qns.get(i).getStatus().toString());
 					if (qns.get(i).getStatus() == 1){
@@ -124,6 +128,26 @@ public class QNDesign {
 			qn.setDescription(paramjson.getString("description"));
 			qn.setType(paramjson.getInt("type"));
 			status = qnd.modifyQuestionnaireInfo(qn);
+		} else {
+			status = -2;//request denied!
+		}
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("status", status.toString());
+		JSONObject json = JSONObject.fromObject(map);
+		return json.toString();
+	}
+	@Path("/releaseqn")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public String releaseQuestionnaire(String param){
+		Integer status = -1;
+		JSONObject paramjson = JSONObject.fromObject(param);
+		String authToken = paramjson.getString("authToken");
+		Integer uid = paramjson.getInt("uid");
+		String requestIp = req.getRemoteAddr();
+		String userAgent = req.getHeader("user-agent");
+		if (au.authUser(uid, requestIp, userAgent, authToken) == 0){
+			status = qnd.releaseQuestionnaire(paramjson.getInt("qnid"));
 		} else {
 			status = -2;//request denied!
 		}
@@ -211,6 +235,24 @@ public class QNDesign {
 					q_map.put("creatTime", fmt.format(qs.get(i).getCreateTime()));
 					q_map.put("order", qs.get(i).getOrder().toString());
 					q_map.put("type", qs.get(i).getType().toString());
+					if (qs.get(i).getType() == 1 || qs.get(i).getType() == 2){
+						List<Option> os = od.getOptionsByQid(qs.get(i).getId());
+						if (os.size() > 0){
+							List<String> o_jsons = new ArrayList<String>();
+							for (int j = 0; j < os.size(); j++){
+								Map<String, String> o_map = new HashMap<String, String>();
+								o_map.put("id", os.get(i).getId().toString());
+								o_map.put("qid", os.get(i).getQid().toString());
+								o_map.put("content", os.get(i).getContent());
+								o_map.put("order", os.get(i).getOrder().toString());
+								o_map.put("status", os.get(i).getStatus().toString());
+								JSONObject o_json = JSONObject.fromObject(o_map);
+								o_jsons.add(o_json.toString());
+							}
+							JSONArray ojsonArray = JSONArray.fromObject(o_jsons);
+							q_map.put("Options", ojsonArray.toString());
+						}	
+					}
 					q_map.put("status", qs.get(i).getStatus().toString());
 					JSONObject q_json = JSONObject.fromObject(q_map);
 					q_jsons.add(q_json.toString());
@@ -218,7 +260,7 @@ public class QNDesign {
 				JSONArray jsonArray = JSONArray.fromObject(q_jsons);
 				map.put("Questions", jsonArray.toString());
 			} else {
-				status = 1;// no such questionnaire!
+				status = 1;// no such question!
 			}
 		} else {
 			status = -2;//request denied!
@@ -272,6 +314,68 @@ public class QNDesign {
 		JSONObject json = JSONObject.fromObject(map);
 		return json.toString();
 	}
-	
-
+	@Path("/modifyos")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public String modifyOptions(String param){
+		JSONObject paramjson = JSONObject.fromObject(param);
+		String authToken = paramjson.getString("authToken");
+		Integer uid = paramjson.getInt("uid");
+		String requestIp = req.getRemoteAddr();
+		String userAgent = req.getHeader("user-agent");
+		if (au.authUser(uid, requestIp, userAgent, authToken) == 0){
+			JSONArray osjson = paramjson.getJSONArray("options");
+			if (od.deleteAllOptions(paramjson.getInt("qid")) != -1){
+				for (int i = 0; i < osjson.size(); i++){
+					JSONObject ojson = JSONObject.fromObject(osjson.get(i));
+					Option o = new Option();
+					o.setQid(paramjson.getInt("qid"));
+					o.setContent(ojson.getString("content"));
+					o.setOrder(ojson.getInt("order"));
+					if (od.addOption(o) != 0){
+						break;
+					} else{
+						continue;
+					}
+				}
+			}	
+		}
+		return getOptionsByQid(param);
+	}
+	public String getOptionsByQid(String param){
+		Integer status = -1;
+		Map<String, String> map = new HashMap<String, String>();
+		List<Option> os = new ArrayList<Option>();
+		JSONObject paramjson = JSONObject.fromObject(param);
+		String authToken = paramjson.getString("authToken");
+		Integer uid = paramjson.getInt("uid");
+		String requestIp = req.getRemoteAddr();
+		String userAgent = req.getHeader("user-agent");
+		if (au.authUser(uid, requestIp, userAgent, authToken) == 0){
+			os = od.getOptionsByQid(paramjson.getInt("qid"));
+			if (os.size() > 0){
+				status = 0;
+				List<String> o_jsons = new ArrayList<String>();
+				for (int i = 0; i < os.size(); i++){
+					Map<String, String> o_map = new HashMap<String, String>();
+					o_map.put("id", os.get(i).getId().toString());
+					o_map.put("qid", os.get(i).getQid().toString());
+					o_map.put("content", os.get(i).getContent());
+					o_map.put("order", os.get(i).getOrder().toString());
+					o_map.put("status", os.get(i).getStatus().toString());
+					JSONObject o_json = JSONObject.fromObject(o_map);
+					o_jsons.add(o_json.toString());
+				}
+				JSONArray jsonArray = JSONArray.fromObject(o_jsons);
+				map.put("Options", jsonArray.toString());
+			} else {
+				status = 1;// no such option!
+			}
+		} else {
+			status = -2;//request denied!
+		}
+		map.put("status", status.toString());
+		JSONObject json = JSONObject.fromObject(map);
+		return json.toString();
+	}
 }

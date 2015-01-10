@@ -3,7 +3,7 @@ package model;
 public class Option {
 	private Integer id;
 	private Integer qid;
-	private Integer content;
+	private String content;
 	private Integer order;
 	private Integer status;
 	public Integer getId() {
@@ -18,10 +18,10 @@ public class Option {
 	public void setQid(Integer qid) {
 		this.qid = qid;
 	}
-	public Integer getContent() {
+	public String getContent() {
 		return content;
 	}
-	public void setContent(Integer content) {
+	public void setContent(String content) {
 		this.content = content;
 	}
 	public Integer getOrder() {

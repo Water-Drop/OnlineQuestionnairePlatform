@@ -84,7 +84,7 @@ public class QuestionDAOimpl implements QuestionDAO{
 		Integer rtn = -1;
 		try {
 			conn = jh.getConnection();
-			ps = conn.prepareStatement("UPDATE oqp.question SET states=2 WHERE id=?");
+			ps = conn.prepareStatement("UPDATE oqp.question SET status=2 WHERE id=?");
 			ps.setInt(1, qid);
 			Integer num = ps.executeUpdate();
 			if (num == 0){
@@ -120,6 +120,7 @@ public class QuestionDAOimpl implements QuestionDAO{
 				q.setOrder(rs.getDouble("order"));
 				q.setType(rs.getInt("type"));
 				q.setStatus(rs.getInt("status"));
+				qs.add(q);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

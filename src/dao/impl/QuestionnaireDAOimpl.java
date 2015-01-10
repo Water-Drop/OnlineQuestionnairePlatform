@@ -146,6 +146,7 @@ public class QuestionnaireDAOimpl implements QuestionnaireDAO{
 					qn.setReleaseTime(fmt.parse(rs.getString("releasetime")));
 					qn.setPath(rs.getString("path"));
 				}
+				qns.add(qn);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
