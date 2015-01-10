@@ -173,7 +173,7 @@ public class UserDAOimpl implements UserDAO{
 				ul.setId(rs.getInt("id"));
 				SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
 				ul.setCreateTime(fmt.parse(rs.getString("createtime")));
-				ul.setAuthToken(rs.getString("suthtoken"));
+				ul.setAuthToken(rs.getString("authtoken"));
 				ul.setUid(uid);
 				ul.setStatus(0);
 				uls.add(ul);
