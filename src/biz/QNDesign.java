@@ -279,11 +279,11 @@ public class QNDesign {
 							List<String> o_jsons = new ArrayList<String>();
 							for (int j = 0; j < os.size(); j++){
 								Map<String, String> o_map = new HashMap<String, String>();
-								o_map.put("id", os.get(i).getId().toString());
-								o_map.put("qid", os.get(i).getQid().toString());
-								o_map.put("content", os.get(i).getContent());
-								o_map.put("order", os.get(i).getOrder().toString());
-								o_map.put("status", os.get(i).getStatus().toString());
+								o_map.put("id", os.get(j).getId().toString());
+								o_map.put("qid", os.get(j).getQid().toString());
+								o_map.put("content", os.get(j).getContent());
+								o_map.put("order", os.get(j).getOrder().toString());
+								o_map.put("status", os.get(j).getStatus().toString());
 								JSONObject o_json = JSONObject.fromObject(o_map);
 								o_jsons.add(o_json.toString());
 							}
@@ -370,7 +370,7 @@ public class QNDesign {
 					o.setQid(paramjson.getInt("qid"));
 					o.setContent(ojson.getString("content"));
 					o.setOrder(ojson.getInt("order"));
-					if (od.addOption(o) != 0){
+					if (od.addOption(o) < 0){
 						break;
 					} else{
 						continue;

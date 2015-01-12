@@ -107,6 +107,7 @@ public class OptionDAOimpl implements OptionDAO{
 				Option o = new Option();
 				o.setId(rs.getInt("id"));
 				o.setQid(qid);
+				o.setContent(rs.getString("content"));
 				o.setOrder(rs.getInt("order"));
 				o.setStatus(rs.getInt("status"));
 				os.add(o);
