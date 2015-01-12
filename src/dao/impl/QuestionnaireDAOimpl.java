@@ -188,4 +188,64 @@ public class QuestionnaireDAOimpl implements QuestionnaireDAO{
 		}
 		return qn;
 	}
+	public List<Questionnaire> getPublicQuestionnaires(){//type = 1 status = 1
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<Questionnaire> qns = new ArrayList<Questionnaire>();
+		try {
+			conn = jh.getConnection();
+			ps = conn.prepareStatement("SELECT id,uid,title,description,createtime,releasetime,path FROM oqp.questionnaire WHERE type=1 AND status=1");
+			rs = ps.executeQuery();
+			while (rs.next()){
+				Questionnaire qn = new Questionnaire();
+				qn.setId(rs.getInt("id"));
+				qn.setUid(rs.getInt("uid"));
+				qn.setTitle(rs.getString("title"));
+				qn.setDescription(rs.getString("description"));
+				SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
+				qn.setCreateTime(fmt.parse(rs.getString("createtime")));
+				qn.setType(1);
+				qn.setStatus(1);
+				qn.setReleaseTime(fmt.parse(rs.getString("releasetime")));
+				qn.setPath(rs.getString("path"));
+				qns.add(qn);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			jh.close(conn);
+		}
+		return qns;
+	}
+	public List<Questionnaire> getAllReleaseQuestionnaires(){//status = 1
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<Questionnaire> qns = new ArrayList<Questionnaire>();
+		try {
+			conn = jh.getConnection();
+			ps = conn.prepareStatement("SELECT id,uid,title,description,createtime,releasetime,path,type FROM oqp.questionnaire WHERE status=1");
+			rs = ps.executeQuery();
+			while (rs.next()){
+				Questionnaire qn = new Questionnaire();
+				qn.setId(rs.getInt("id"));
+				qn.setUid(rs.getInt("uid"));
+				qn.setTitle(rs.getString("title"));
+				qn.setDescription(rs.getString("description"));
+				SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
+				qn.setCreateTime(fmt.parse(rs.getString("createtime")));
+				qn.setType(rs.getInt("type"));
+				qn.setStatus(1);
+				qn.setReleaseTime(fmt.parse(rs.getString("releasetime")));
+				qn.setPath(rs.getString("path"));
+				qns.add(qn);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			jh.close(conn);
+		}
+		return qns;
+	}
 }

@@ -11,4 +11,6 @@ public interface QuestionnaireDAO {
 	public Integer deleteQuestionnaire(Integer qnid);
 	public List<Questionnaire> getQuestionnairesByUid(Integer uid);
 	public Questionnaire getQuestionnaireById(Integer qnid);
+	public List<Questionnaire> getPublicQuestionnaires();
+	public List<Questionnaire> getAllReleaseQuestionnaires();
 }

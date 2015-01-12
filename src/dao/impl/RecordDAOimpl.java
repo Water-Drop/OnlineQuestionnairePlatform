@@ -11,7 +11,6 @@ import java.util.List;
 import util.JDBCHelper;
 import model.AnswerRecord;
 import model.FillRecord;
-import model.Option;
 import dao.RecordDAO;
 
 public class RecordDAOimpl implements RecordDAO{
@@ -107,6 +106,27 @@ public class RecordDAOimpl implements RecordDAO{
 		}
 		return frs;
 	}
+	public Integer isHaveFillRecords(Integer uid, Integer qnid){
+		Integer rtn = 0;//not have
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = jh.getConnection();
+			ps = conn.prepareStatement("SELECT id,filltime,status FROM oqp.fillrecord WHERE uid=? AND qnid=? AND status!=2");
+			ps.setInt(1, uid);
+			ps.setInt(2, qnid);
+			rs = ps.executeQuery();
+			if (rs.first() == true){
+				rtn = 1;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			jh.close(conn);
+		}
+		return rtn;
+	}
 	public Integer addAnswerRecord(AnswerRecord ar){
 		Connection conn = null;
 		PreparedStatement ips = null;
@@ -151,9 +171,105 @@ public class RecordDAOimpl implements RecordDAO{
 		return arid;
 	}
 	public List<AnswerRecord> getAnswerRecordsByFid(Integer fid){
-		return new ArrayList<AnswerRecord>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<AnswerRecord> ars = new ArrayList<AnswerRecord>();
+		try {
+			conn = jh.getConnection();
+			ps = conn.prepareStatement("SELECT id,qid,qtype,oid,content,status FROM oqp.answerrecord WHERE fid=? AND status!=2");
+			ps.setInt(1, fid);
+			rs = ps.executeQuery();
+			while (rs.next()){
+				AnswerRecord ar = new AnswerRecord();
+				ar.setId(rs.getInt("id"));
+				ar.setQid(rs.getInt("qid"));
+				ar.setFid(fid);
+				ar.setQtype(rs.getInt("qtype"));
+				if (ar.getQtype() == 1 || ar.getQtype() == 2){
+					ar.setOid(rs.getInt("oid"));
+				} else {
+					ar.setContent(rs.getString("content"));
+				}
+				ar.setStatus(rs.getInt("status"));
+				ars.add(ar);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			jh.close(conn);
+		}
+		return ars;
 	}
 	public List<AnswerRecord> getAnswerRecordsByQid(Integer qid){
-		return new ArrayList<AnswerRecord>();
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<AnswerRecord> ars = new ArrayList<AnswerRecord>();
+		try {
+			conn = jh.getConnection();
+			ps = conn.prepareStatement("SELECT id,fid,qtype,oid,content,status FROM oqp.answerrecord WHERE qid=? AND status!=2");
+			ps.setInt(1, qid);
+			rs = ps.executeQuery();
+			while (rs.next()){
+				AnswerRecord ar = new AnswerRecord();
+				ar.setId(rs.getInt("id"));
+				ar.setQid(qid);
+				ar.setFid(rs.getInt("fid"));
+				ar.setQtype(rs.getInt("qtype"));
+				if (ar.getQtype() == 1 || ar.getQtype() == 2){
+					ar.setOid(rs.getInt("oid"));
+				} else {
+					ar.setContent(rs.getString("content"));
+				}
+				ar.setStatus(rs.getInt("status"));
+				ars.add(ar);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			jh.close(conn);
+		}
+		return ars;
+	}
+	public Integer getFillCountByQnid(Integer qnid){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Integer count = -1;
+		try {
+			conn = jh.getConnection();
+			ps = conn.prepareStatement("SELECT COUNT(*) FROM oqp.fillrecord WHERE qnid=? AND status!=2");
+			ps.setInt(1, qnid);
+			rs = ps.executeQuery();
+			while (rs.first() != false){
+				count = rs.getInt("COUNT(*)");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			jh.close(conn);
+		}
+		return count;
+	}
+	public Integer getFillCountByOid(Integer oid){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Integer count = -1;
+		try {
+			conn = jh.getConnection();
+			ps = conn.prepareStatement("SELECT COUNT(*) FROM oqp.answerrecord WHERE oid=? AND status!=2");
+			ps.setInt(1, oid);
+			rs = ps.executeQuery();
+			while (rs.first() != false){
+				count = rs.getInt("COUNT(*)");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			jh.close(conn);
+		}
+		return count;
 	}
 }
