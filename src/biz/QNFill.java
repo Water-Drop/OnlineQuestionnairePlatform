@@ -339,7 +339,7 @@ public class QNFill {
 		} else {
 			status = -2;//request denied!
 		}
-		map.put("fillcount", rd.getFillRecordsByQnid(paramjson.getInt("qnid")).toString());
+		map.put("fillcount", rd.getFillCountByQnid(paramjson.getInt("qnid")).toString());
 		map.put("status", status.toString());
 		JSONObject json = JSONObject.fromObject(map);
 		return json.toString();

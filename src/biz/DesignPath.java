@@ -89,7 +89,7 @@ public class DesignPath {
 				JSONArray jsonArray = JSONArray.fromObject(d_jsons);
 				map.put("Paths", jsonArray.toString());
 			} else {
-				status = 0;
+				status = 1;
 			}
 		} else {
 			status = -2;//request denied!
