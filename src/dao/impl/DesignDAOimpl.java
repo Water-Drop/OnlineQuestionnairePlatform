@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import model.Design;
 import util.JDBCHelper;
@@ -65,5 +67,30 @@ public class DesignDAOimpl implements DesignDAO{
 			jh.close(conn);
 		}
 		return did;
+	}
+	public List<Design> getAllDatapaths(){
+		String rtn = "";
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<Design> ds = new ArrayList<Design>();
+		try {
+			conn = jh.getConnection();
+			ps = conn.prepareStatement("SELECT id,uid,path,status FROM oqp.design WHERE status!=2");
+			rs = ps.executeQuery();
+			if (rs.next()){
+				Design d = new Design();
+				d.setId(rs.getInt("id"));
+				d.setUid(rs.getInt("uid"));
+				d.setDatapath(rs.getString("path"));
+				d.setStatus(rs.getInt("status"));
+				ds.add(d);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			jh.close(conn);
+		}
+		return ds;
 	}
 }

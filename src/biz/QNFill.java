@@ -122,6 +122,36 @@ public class QNFill {
 		JSONObject json = JSONObject.fromObject(map);
 		return json.toString();
 	}
+	@Path("/getqnbyid")
+	@POST
+	@Produces(MediaType.APPLICATION_JSON)
+	public String getQuestionnaireById(String param){
+		Integer status = -1;
+		Map<String, String> map = new HashMap<String, String>();
+		Questionnaire qn = new Questionnaire();
+		JSONObject paramjson = JSONObject.fromObject(param);
+		qn = qnd.getQuestionnaireById(paramjson.getInt("qnid"));
+		if (qn.getStatus() != 2){//2 means no qn for the id
+			status = 0;
+			map.put("qnid", qn.getId().toString());
+			map.put("uid", qn.getUid().toString());
+			map.put("title", qn.getTitle());
+			map.put("description", qn.getDescription());
+			SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss"); 
+			map.put("createTime", fmt.format(qn.getCreateTime()));
+			map.put("type", qn.getType().toString());
+			map.put("qnstatus", qn.getStatus().toString());
+			if (qn.getStatus() == 1){
+				map.put("path", qn.getPath());
+				map.put("releaseTime", fmt.format(qn.getReleaseTime()));
+				}
+			} else {
+			status = 1;// no such questionnaire!
+			}
+		map.put("status", status.toString());
+		JSONObject json = JSONObject.fromObject(map);
+		return json.toString();
+	}
 	@Path("/getq")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
@@ -212,7 +242,7 @@ public class QNFill {
 					ar.setOid(arjson.getInt("oid"));
 					rd.addAnswerRecord(ar);
 				} else if (arjson.getInt("qtype") == 2){//multi choice
-					JSONArray osjson = paramjson.getJSONArray("options");
+					JSONArray osjson = arjson.getJSONArray("options");
 					for (int j = 0; j < osjson.size(); j++){
 						JSONObject ojson = JSONObject.fromObject(osjson.get(j));
 						AnswerRecord ar = new AnswerRecord();

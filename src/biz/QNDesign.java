@@ -22,9 +22,11 @@ import net.sf.json.JSONObject;
 import dao.OptionDAO;
 import dao.QuestionDAO;
 import dao.QuestionnaireDAO;
+import dao.RecordDAO;
 import dao.impl.OptionDAOimpl;
 import dao.impl.QuestionDAOimpl;
 import dao.impl.QuestionnaireDAOimpl;
+import dao.impl.RecordDAOimpl;
 
 @Path("/design")
 public class QNDesign {
@@ -32,6 +34,7 @@ public class QNDesign {
 	QuestionDAO qd = new QuestionDAOimpl();
 	QuestionnaireDAO qnd = new QuestionnaireDAOimpl();
 	OptionDAO od = new OptionDAOimpl();
+	RecordDAO rd = new RecordDAOimpl();
 	Auth au = new Auth();
 	@Path("/addqn")
 	@POST
@@ -94,6 +97,7 @@ public class QNDesign {
 					if (qns.get(i).getStatus() == 1){
 						qn_map.put("path", qns.get(i).getPath());
 						qn_map.put("releaseTime", fmt.format(qns.get(i).getReleaseTime()));
+						qn_map.put("fillcount", rd.getFillCountByQnid(qns.get(i).getId()).toString());
 					}
 					JSONObject qn_json = JSONObject.fromObject(qn_map);
 					qn_jsons.add(qn_json.toString());
@@ -310,16 +314,17 @@ public class QNDesign {
 	@Path("/modifyq")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
-	public String modifyQuestion(Integer qnid, Integer qid, String param){
+	public String modifyQuestion(String param){
 		Integer status = -1;
 		JSONObject paramjson = JSONObject.fromObject(param);
 		String authToken = paramjson.getString("authToken");
 		Integer uid = paramjson.getInt("uid");
 		String requestIp = req.getRemoteAddr();
 		String userAgent = req.getHeader("user-agent");
+		Integer qid = paramjson.getInt("qid");
 		if (au.authUser(uid, requestIp, userAgent, authToken) == 0){
 			Question q = new Question();
-			q.setId(paramjson.getInt("qid"));
+			q.setId(qid);
 			q.setTitle(paramjson.getString("title"));
 			q.setDescription(paramjson.getString("description"));
 			q.setOrder(paramjson.getDouble("order"));
@@ -328,6 +333,7 @@ public class QNDesign {
 			status = -2;//request denied!
 		}
 		Map<String, String> map = new HashMap<String, String>();
+		map.put("qid", qid.toString());
 		map.put("status", status.toString());
 		JSONObject json = JSONObject.fromObject(map);
 		return json.toString();

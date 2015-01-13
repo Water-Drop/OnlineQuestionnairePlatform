@@ -1,8 +1,11 @@
 package dao;
 
+import java.util.List;
+
 import model.Design;
 
 public interface DesignDAO {
-	String getDatapathByUid(Integer uid);
-	Integer addDatapath(Design d);
+	public String getDatapathByUid(Integer uid);
+	public Integer addDatapath(Design d);
+	public List<Design> getAllDatapaths();	
 }
