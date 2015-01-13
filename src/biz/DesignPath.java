@@ -1,6 +1,5 @@
 package biz;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -18,13 +17,16 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import util.MD5Helper;
 import dao.DesignDAO;
+import dao.UserDAO;
 import dao.impl.DesignDAOimpl;
+import dao.impl.UserDAOimpl;
 
 @Path("/designPath")
 public class DesignPath {
 	@Context HttpServletRequest req; 
 	DesignDAO dd = new DesignDAOimpl();
 	Auth au = new Auth();
+	UserDAO ud = new UserDAOimpl();
 	@Path("/get")
 	@POST
 	@Produces(MediaType.APPLICATION_JSON)
@@ -78,13 +80,18 @@ public class DesignPath {
 				status = 0;
 				List<String> d_jsons = new ArrayList<String>();
 				for (int i = 0; i < ds.size(); i++){
-					Map<String, String> d_map = new HashMap<String, String>();
-					d_map.put("id", ds.get(i).getId().toString());
-					d_map.put("uid", ds.get(i).getUid().toString());
-					d_map.put("designPath", ds.get(i).getDatapath());
-					d_map.put("status", ds.get(i).getStatus().toString());
-					JSONObject d_json = JSONObject.fromObject(d_map);
-					d_jsons.add(d_json.toString());
+					if (ds.get(i).getId() == uid){
+						continue;
+					} else {
+						Map<String, String> d_map = new HashMap<String, String>();
+						d_map.put("id", ds.get(i).getId().toString());
+						d_map.put("uid", ds.get(i).getUid().toString());
+						d_map.put("username", ud.getUsernameByUid(ds.get(i).getId()));
+						d_map.put("designPath", ds.get(i).getDatapath());
+						d_map.put("status", ds.get(i).getStatus().toString());
+						JSONObject d_json = JSONObject.fromObject(d_map);
+						d_jsons.add(d_json.toString());
+					}
 				}
 				JSONArray jsonArray = JSONArray.fromObject(d_jsons);
 				map.put("Paths", jsonArray.toString());

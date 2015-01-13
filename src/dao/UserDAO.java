@@ -13,4 +13,5 @@ public interface UserDAO {
 	public Integer addAuthToken(Integer uid, String createTime, String authToken);
 	public List<UserLogin> getAuthTokensByUid(Integer uid);
 	public Integer deleteAuthToken(Integer uid, String authToken);
+	public String getUsernameByUid(Integer uid);
 }

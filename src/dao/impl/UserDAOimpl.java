@@ -208,4 +208,22 @@ public class UserDAOimpl implements UserDAO{
 		}
 		return rtn;
 	}
+	public String getUsernameByUid(Integer uid){
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String rtn = "";
+		try {
+			conn = jh.getConnection();
+			ps = conn.prepareStatement("SELECT username FROM oqp.user WHERE id=? and status=0");
+			ps.setInt(1, uid);
+			rs = ps.executeQuery();
+			if (rs.first() != false){
+				rtn = rs.getString("username");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return rtn;
+	}
 }

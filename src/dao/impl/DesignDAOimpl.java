@@ -69,7 +69,6 @@ public class DesignDAOimpl implements DesignDAO{
 		return did;
 	}
 	public List<Design> getAllDatapaths(){
-		String rtn = "";
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -78,7 +77,7 @@ public class DesignDAOimpl implements DesignDAO{
 			conn = jh.getConnection();
 			ps = conn.prepareStatement("SELECT id,uid,path,status FROM oqp.design WHERE status!=2");
 			rs = ps.executeQuery();
-			if (rs.next()){
+			while (rs.next()){
 				Design d = new Design();
 				d.setId(rs.getInt("id"));
 				d.setUid(rs.getInt("uid"));
