@@ -242,7 +242,7 @@ public class RecordDAOimpl implements RecordDAO{
 			ps = conn.prepareStatement("SELECT COUNT(*) FROM oqp.fillrecord WHERE qnid=? AND status!=2");
 			ps.setInt(1, qnid);
 			rs = ps.executeQuery();
-			while (rs.first() != false){
+			if (rs.first() != false){
 				count = rs.getInt("COUNT(*)");
 			}
 		} catch (Exception e) {
@@ -262,7 +262,7 @@ public class RecordDAOimpl implements RecordDAO{
 			ps = conn.prepareStatement("SELECT COUNT(*) FROM oqp.answerrecord WHERE oid=? AND status!=2");
 			ps.setInt(1, oid);
 			rs = ps.executeQuery();
-			while (rs.first() != false){
+			if (rs.first() != false){
 				count = rs.getInt("COUNT(*)");
 			}
 		} catch (Exception e) {

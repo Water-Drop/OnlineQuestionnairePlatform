@@ -318,7 +318,7 @@ public class QNFill {
 							List<String> ar_jsons = new ArrayList<String>();
 							for (int j = 0; j < ars.size(); j++){
 								Map<String, String> ar_map = new HashMap<String, String>();
-								ar_map.put("content", ars.get(i).getContent());
+								ar_map.put("content", ars.get(j).getContent());
 								
 								JSONObject ar_json = JSONObject.fromObject(ar_map);
 								ar_jsons.add(ar_json.toString());
